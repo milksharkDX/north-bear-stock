@@ -21,14 +21,19 @@ def fetch_fmp_data(url):
         return None
 
 def fetch_metrics(symbol):
-    url = f"https://financialmodelingprep.com/api/v3/key-metrics/{symbol}?period=annual&limit=1&apikey={API_KEY}"
+    # 確保 period=annual 且 apikey 正確
+    url = f"https://financialmodelingprep.com/api/v3/key-metrics/{symbol}?period=annual&apikey={API_KEY}"
     data = fetch_fmp_data(url)
-    return data[0] if data else None
+    if data and isinstance(data, list) and len(data) > 0:
+        return data[0]
+    return None
 
 def fetch_profile(symbol):
     url = f"https://financialmodelingprep.com/api/v3/profile/{symbol}?apikey={API_KEY}"
     data = fetch_fmp_data(url)
-    return data[0] if data else None
+    if data and isinstance(data, list) and len(data) > 0:
+        return data[0]
+    return None
 
 st.title("🐻 北熊選股工具 (除錯優化版)")
 
@@ -81,3 +86,4 @@ if st.button("🚀 執行批次分析"):
             st.dataframe(df)
             csv = df.to_csv(index=False, encoding='utf-8-sig').encode('utf-8-sig')
             st.download_button("📥 下載 CSV", csv, "analysis.csv", "text/csv")
+
